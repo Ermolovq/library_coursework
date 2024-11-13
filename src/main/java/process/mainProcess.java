@@ -4,17 +4,36 @@
  */
 package process;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import net.proteanit.sql.DbUtils;
+
 /**
  *
  * @author Мой ПК
  */
 public class mainProcess extends javax.swing.JFrame {
 
-    /**
-     * Creates new form mainProcess
-     */
+    String currentTable = "booksList";
+    
     public mainProcess() {
         initComponents();
+        updateTable();
+    }
+    
+    private void updateTable(){
+        try(Connection connection = DBConnection.getConnection("bibliaryDB")){
+            String query = "SELECT * FROM "+currentTable;
+            try(PreparedStatement statement = connection.prepareStatement(query)) {
+                ResultSet resultSet = statement.executeQuery();
+                table.setModel(DbUtils.resultSetToTableModel(resultSet));
+                System.out.println("table updated");
+            }
+        } catch(SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -27,9 +46,15 @@ public class mainProcess extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
+        booksListButton = new javax.swing.JButton();
+        customersButton = new javax.swing.JButton();
+        addButton = new javax.swing.JButton();
+        deleteButton = new javax.swing.JButton();
+        updateTableButton = new javax.swing.JButton();
+        changeButton = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        table = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Бібліотека");
@@ -37,44 +62,116 @@ public class mainProcess extends javax.swing.JFrame {
 
         jPanel1.setPreferredSize(new java.awt.Dimension(0, 50));
 
+        booksListButton.setText("Список книг");
+        booksListButton.setEnabled(false);
+        booksListButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                booksListButtonActionPerformed(evt);
+            }
+        });
+
+        customersButton.setText("Клієнти");
+        customersButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                customersButtonActionPerformed(evt);
+            }
+        });
+
+        addButton.setText("Додати");
+        addButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addButtonActionPerformed(evt);
+            }
+        });
+
+        deleteButton.setText("Видалити");
+        deleteButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteButtonActionPerformed(evt);
+            }
+        });
+
+        updateTableButton.setText("Оновити таблицю");
+        updateTableButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updateTableButtonActionPerformed(evt);
+            }
+        });
+
+        changeButton.setText("Змінити");
+        changeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                changeButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(booksListButton)
+                .addGap(18, 18, 18)
+                .addComponent(customersButton, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(updateTableButton)
+                .addGap(137, 137, 137)
+                .addComponent(changeButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(addButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(deleteButton)
+                .addGap(19, 19, 19))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 50, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(addButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(deleteButton, javax.swing.GroupLayout.DEFAULT_SIZE, 37, Short.MAX_VALUE)
+                            .addComponent(booksListButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(customersButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(updateTableButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(changeButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         jPanel2.setToolTipText("");
         jPanel2.setPreferredSize(new java.awt.Dimension(1114, 500));
         jPanel2.setRequestFocusEnabled(false);
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
-        ));
-        jTable1.setCellSelectionEnabled(true);
-        jScrollPane2.setViewportView(jTable1);
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(table);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 1114, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 1114, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -97,6 +194,84 @@ public class mainProcess extends javax.swing.JFrame {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void booksListButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_booksListButtonActionPerformed
+        currentTable = "booksList";
+        updateTable();
+        booksListButton.setEnabled(false);
+        customersButton.setEnabled(true);
+    }//GEN-LAST:event_booksListButtonActionPerformed
+
+    private void customersButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_customersButtonActionPerformed
+        currentTable = "customers";
+        updateTable();
+        booksListButton.setEnabled(true);
+        customersButton.setEnabled(false);
+    }//GEN-LAST:event_customersButtonActionPerformed
+
+    private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
+        if(currentTable == "booksList") {
+            addBookWindow addBookListWindow = new addBookWindow();
+            addBookListWindow.setVisible(true);
+        } else if (currentTable == "customers") {
+            addCustomerWindow addCustomerWindow = new addCustomerWindow();
+            addCustomerWindow.setVisible(true);
+        }
+    }//GEN-LAST:event_addButtonActionPerformed
+
+    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
+        if(currentTable == "booksList") {
+            try(Connection connection = DBConnection.getConnection("bibliaryDB")){
+                int row = table.getSelectedRow();
+                String id = table.getModel().getValueAt(row, 0).toString();
+                String query = "DELETE FROM booksList WHERE id = ?";
+                try(PreparedStatement statement = connection.prepareStatement(query)) {
+                    statement.setString(1, id);
+                    statement.execute();
+                    System.out.println("book deleted");
+                }
+            } catch(SQLException e) {
+                e.printStackTrace();
+            }
+        } else if (currentTable == "customers") {
+            try(Connection connection = DBConnection.getConnection("bibliaryDB")){
+                int row = table.getSelectedRow();
+                String id = table.getModel().getValueAt(row, 0).toString();
+                String query = "DELETE FROM customers WHERE id = ?";
+                try(PreparedStatement statement = connection.prepareStatement(query)) {
+                    statement.setString(1, id);
+                    statement.execute();
+                    System.out.println("customer deleted");
+                }
+            } catch(SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        
+        updateTable();
+    }//GEN-LAST:event_deleteButtonActionPerformed
+
+    private void updateTableButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateTableButtonActionPerformed
+        updateTable();
+    }//GEN-LAST:event_updateTableButtonActionPerformed
+
+    private void changeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeButtonActionPerformed
+        if(currentTable == "booksList") {
+            changeBookWindow changeBookWindow = new changeBookWindow();
+            int row = table.getSelectedRow();
+            String bookId = table.getModel().getValueAt(row, 0).toString();
+            changeBookWindow.bookId = bookId;
+            changeBookWindow.setDeafault();
+            changeBookWindow.setVisible(true);
+        } else if(currentTable == "customers") {
+            changeCustomerWindow changeCustomerWindow = new changeCustomerWindow();
+            int row = table.getSelectedRow();
+            String customerId = table.getModel().getValueAt(row, 0).toString();
+            changeCustomerWindow.customerId = customerId;
+            changeCustomerWindow.setDeafault();
+            changeCustomerWindow.setVisible(true);
+        }
+    }//GEN-LAST:event_changeButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -134,9 +309,15 @@ public class mainProcess extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton addButton;
+    private javax.swing.JButton booksListButton;
+    private javax.swing.JButton changeButton;
+    private javax.swing.JButton customersButton;
+    private javax.swing.JButton deleteButton;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable table;
+    private javax.swing.JButton updateTableButton;
     // End of variables declaration//GEN-END:variables
 }

@@ -1,5 +1,10 @@
 package process;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 public class login extends javax.swing.JFrame {
 
     /**
@@ -20,7 +25,7 @@ public class login extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        LoginField = new javax.swing.JTextField();
+        EmailField = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         PasswordField = new javax.swing.JTextField();
@@ -38,10 +43,11 @@ public class login extends javax.swing.JFrame {
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Бібліотечна система");
 
-        LoginField.setToolTipText("Введіть e-mail");
-        LoginField.addActionListener(new java.awt.event.ActionListener() {
+        EmailField.setText("test@gmail.com");
+        EmailField.setToolTipText("Введіть e-mail");
+        EmailField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                LoginFieldActionPerformed(evt);
+                EmailFieldActionPerformed(evt);
             }
         });
 
@@ -51,6 +57,10 @@ public class login extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("Bookman Old Style", 0, 14)); // NOI18N
         jLabel3.setText("Пароль");
 
+        PasswordField.setText("test");
+        PasswordField.setToolTipText("Введіть пароль");
+
+        ConfirmLogin.setFont(new java.awt.Font("Bookman Old Style", 0, 12)); // NOI18N
         ConfirmLogin.setText("Увійти");
         ConfirmLogin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -69,7 +79,7 @@ public class login extends javax.swing.JFrame {
                     .addComponent(PasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(LoginField)
+                        .addComponent(EmailField)
                         .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(92, 92, 92))
@@ -82,7 +92,7 @@ public class login extends javax.swing.JFrame {
                 .addGap(122, 122, 122)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(LoginField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(EmailField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -92,8 +102,8 @@ public class login extends javax.swing.JFrame {
                 .addContainerGap(138, Short.MAX_VALUE))
         );
 
-        LoginField.getAccessibleContext().setAccessibleName("LoginField");
-        LoginField.getAccessibleContext().setAccessibleDescription("");
+        EmailField.getAccessibleContext().setAccessibleName("LoginField");
+        EmailField.getAccessibleContext().setAccessibleDescription("");
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 410, 600));
 
@@ -101,15 +111,36 @@ public class login extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void LoginFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoginFieldActionPerformed
+    private void EmailFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EmailFieldActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_LoginFieldActionPerformed
+    }//GEN-LAST:event_EmailFieldActionPerformed
 
     private void ConfirmLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConfirmLoginActionPerformed
         // TODO add your handling code here:
-        dispose();
-        mainProcess mainProcessWindow = new mainProcess();
-        mainProcessWindow.setVisible(true);
+        String email = EmailField.getText();
+        String password = PasswordField.getText();
+        
+        
+        try(Connection connection = DBConnection.getConnection("bibliaryDB")){
+            String query = "SELECT * FROM employers WHERE email = ? AND password = ?";
+            try(PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setString(1, email);
+                statement.setString(2, password);
+                
+                ResultSet resultSet = statement.executeQuery();
+                
+                if(resultSet.next()) {
+                    System.out.println("User logged in");
+                    dispose();
+                    mainProcess mainProcessWindow = new mainProcess();
+                    mainProcessWindow.setVisible(true);
+                } else {
+                    System.out.println("Email or Password incorrect");
+                }
+            }
+        } catch(SQLException e) {
+            e.printStackTrace();
+        }
     }//GEN-LAST:event_ConfirmLoginActionPerformed
 
     /**
@@ -149,7 +180,7 @@ public class login extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton ConfirmLogin;
-    private javax.swing.JTextField LoginField;
+    private javax.swing.JTextField EmailField;
     private javax.swing.JTextField PasswordField;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
