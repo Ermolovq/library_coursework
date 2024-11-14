@@ -42,7 +42,6 @@ public class login extends javax.swing.JFrame {
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Бібліотечна система");
 
-        EmailField.setText("test@gmail.com");
         EmailField.setToolTipText("Введіть e-mail");
         EmailField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -56,7 +55,6 @@ public class login extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("Bookman Old Style", 0, 14)); // NOI18N
         jLabel3.setText("Пароль");
 
-        PasswordField.setText("test");
         PasswordField.setToolTipText("Введіть пароль");
 
         ConfirmLogin.setFont(new java.awt.Font("Bookman Old Style", 0, 12)); // NOI18N

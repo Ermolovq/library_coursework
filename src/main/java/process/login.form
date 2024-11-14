@@ -99,7 +99,6 @@
         </Component>
         <Component class="javax.swing.JTextField" name="EmailField">
           <Properties>
-            <Property name="text" type="java.lang.String" value="test@gmail.com"/>
             <Property name="toolTipText" type="java.lang.String" value="&#x412;&#x432;&#x435;&#x434;&#x456;&#x442;&#x44c; e-mail"/>
           </Properties>
           <AccessibilityProperties>
@@ -128,7 +127,6 @@
         </Component>
         <Component class="javax.swing.JTextField" name="PasswordField">
           <Properties>
-            <Property name="text" type="java.lang.String" value="test"/>
             <Property name="toolTipText" type="java.lang.String" value="&#x412;&#x432;&#x435;&#x434;&#x456;&#x442;&#x44c; &#x43f;&#x430;&#x440;&#x43e;&#x43b;&#x44c;"/>
           </Properties>
         </Component>
